@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 class HomeView extends StatelessWidget {
   HomeView({Key? key}) : super(key: key);
 
+  final ApiCall apiCall = ApiCall();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,9 +19,11 @@ class HomeView extends StatelessWidget {
         ),
       ),
       body: FutureBuilder<SpaceX>(
-        future: ApiCall.apiCall(),
-        builder: (BuildContext context, AsyncSnapshot<SpaceX> snapshot) {
-          if (snapshot.hasData) {
+        future: apiCall.apiCall(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          // if fetching operations success, this state will work
+          if (snapshot.connectionState == ConnectionState.done) {
+            print(snapshot.hasData);
             return Padding(
               padding: const EdgeInsets.all(21.0),
               child: SingleChildScrollView(
@@ -99,6 +103,7 @@ class HomeView extends StatelessWidget {
                 ),
               ),
             );
+            // If there is an error with the api fetching operation this state will work.
           } else {
             return Center(
               child: CircularProgressIndicator(
