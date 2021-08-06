@@ -1,26 +1,27 @@
 import 'package:appnation_spacex/api/api_call.dart';
 import 'package:appnation_spacex/model/spacex_model.dart';
+import 'package:appnation_spacex/widgets/custom_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class HomeView extends StatelessWidget {
-  HomeView({Key? key}) : super(key: key);
-
   final ApiCall apiCall = ApiCall();
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          "SpaceX Last Mission",
+          "SpaceX Latest Mission",
           style: TextStyle(color: Colors.black),
         ),
       ),
       body: FutureBuilder<SpaceX>(
         future: apiCall.apiCall(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
+          
           // if fetching operations success, this state will work
           if (snapshot.connectionState == ConnectionState.done) {
             print(snapshot.hasData);
@@ -42,18 +43,17 @@ class HomeView extends StatelessWidget {
                       ),
                       child: Column(
                         children: [
-                          ListTile(
-                            title: Text("ID"),
-                            trailing: Text(snapshot.data!.id.toString()),
+                          CustomListTile(
+                              title: "ID",
+                              trailing: "${snapshot.data!.id.toString()}"),
+                          CustomListTile(
+                            title: "Spaceship Name",
+                            trailing: "${snapshot.data!.name.toString()}",
                           ),
-                          ListTile(
-                            title: Text("Spaceship Name"),
-                            trailing: Text(snapshot.data!.name.toString()),
-                          ),
-                          ListTile(
-                              title: Text("Flight Number"),
+                          CustomListTile(
+                              title: "Flight Number",
                               trailing:
-                                  Text(snapshot.data!.flightNumber.toString())),
+                                  "${snapshot.data!.flightNumber.toString()}"),
                           InkWell(
                             onTap: () {
                               showDialog(
@@ -66,25 +66,25 @@ class HomeView extends StatelessWidget {
                                     );
                                   });
                             },
-                            child: ListTile(
-                                title: Text("Patch"),
-                                trailing: Image.network(snapshot
-                                    .data!.links!.patch!.small
-                                    .toString())),
-                          ),
-                          ListTile(
-                            title: Text("Date"),
-                            trailing: Text(
-                              DateFormat('yyyy/MM/dd' + '\t\t' + 'HH:mm')
-                                  .format(snapshot.data!.dateUtc!),
+                            child: CustomListTile(
+                              title: "Patch",
+                              trailing:
+                                  "${snapshot.data!.links!.patch!.small.toString()}",
+                              isImage: true,
                             ),
                           ),
-                          ListTile(
-                            title: Text("Status"),
-                            trailing: Text(
-                              snapshot.data!.success! ? "Success" : "Failed",
-                            ),
-                          ),
+                          CustomListTile(
+                              title: "Date",
+                              trailing:
+                                  DateFormat('yyyy/MM/dd' + '\t\t' + 'HH:mm')
+                                      .format(snapshot.data!.dateUtc!)),
+                          CustomListTile(
+                              title: "Status",
+                              trailing:
+                                  "${snapshot.data!.success!}".toLowerCase() ==
+                                          "true"
+                                      ? "Success"
+                                      : "Failed"),
                           ExpansionTile(
                             title: Text("Details"),
                             iconColor: Colors.black,
@@ -114,5 +114,5 @@ class HomeView extends StatelessWidget {
         },
       ),
     );
-  }
+    }
 }

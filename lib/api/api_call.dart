@@ -14,8 +14,5 @@ class ApiCall {
     } else {
       throw Exception('Something went wrong');
     }
-
   }
-
-
 }
